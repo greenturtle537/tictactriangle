@@ -79,6 +79,8 @@ function gameLoop() {
 		y: "0"
 	}];
 
+	running = true;
+
 	while (running) {
 
 		// Get input
