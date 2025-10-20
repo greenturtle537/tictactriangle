@@ -42,9 +42,9 @@ function show_image(filename, fx, delay) {
 	var graphic = new Graphic();
 	graphic.load(filename);
 	if (fx && graphic.revision >= 1.82)
-		graphic.drawfx();
+		graphic.drawfx(0,0,80,24);
 	else
-		graphic.draw();
+		graphic.draw(0,0,80,24);
 	sleep(delay);
 }
 
