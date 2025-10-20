@@ -79,6 +79,8 @@ function gameLoop() {
 		y: "0"
 	}];
 
+	renderBackground();
+
 	running = true;
 
 	while (running) {
@@ -100,7 +102,9 @@ function gameLoop() {
 					case 'q':
 						running = false;
 						break;
-					// Additional key handling here
+					case 'w', 'a', 's', 'd':
+						moveMarker(key);
+						break;
 				}
 			}
 		}
@@ -116,6 +120,11 @@ function validateMove(currentBoard, playerMove) {
 		return false;
 	}
 	return true;
+}
+
+function moveMarker(direction) {
+	// Placeholder function to move marker based on direction input
+	// Actual implementation would depend on how marker position is tracked
 }
 
 function findCurrentSubboard(currentBoard) {
@@ -144,9 +153,22 @@ function renderBoard(currentBoard) {
 				// Position cursor at the appropriate location
 				console.gotoxy(startX + col, startY + row);
 				// Print the cell value
-				console.print(board.sub[row][col]);
+				if (board.sub[row][col] === "0") {
+					console.print(" ");
+				} else {
+					console.print(board.sub[row][col]);
+				}
 			}
 		}
+	}
+}
+
+function renderBackground() {
+	console.clear();
+	backgroundTile = ".";
+	for (var y = 0; y < screenHeight; y++) {
+		console.gotoxy(0, y);
+		console.print((backgroundTile * screenWidth));
 	}
 }
 
