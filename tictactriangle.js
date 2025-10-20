@@ -50,7 +50,7 @@ function show_image(filename, fx, delay) {
 
 function logo() {
 	console.clear();
-	show_image(telefish_title, false, 0);
+	show_image(tictactriangle_title, false, 0);
 	console.pause();
 	console.clear();
 }
