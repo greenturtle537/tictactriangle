@@ -153,6 +153,7 @@ try {
 	console.pause();
 	logo();
     console.pause();
+	gameLoop();
 	exit(0);
 } catch (e) {
 	var msg = file_getname(e.fileName) +
