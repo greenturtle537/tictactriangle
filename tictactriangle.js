@@ -42,7 +42,7 @@ function show_image(filename, fx, delay) {
 	var graphic = new Graphic();
 	graphic.load(filename);
 	if (fx && graphic.revision >= 1.82)
-		graphic.drawfx('center', 'center');
+		graphic.drawfx();
 	else
 		graphic.draw('center', 'center');
 	sleep(delay);
