@@ -44,7 +44,7 @@ function show_image(filename, fx, delay) {
 	if (fx && graphic.revision >= 1.82)
 		graphic.drawfx();
 	else
-		graphic.draw('center', 'center');
+		graphic.draw();
 	sleep(delay);
 }
 
