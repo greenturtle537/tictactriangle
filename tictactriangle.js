@@ -55,6 +55,99 @@ function logo() {
 	console.clear();
 }
 
+function gameLoop() {
+    // Main game loop
+    /*
+
+    Gameboard objects:
+    0 = unused space
+    x = player 1
+    o = player 2
+	t = triangle space
+
+	Subboard: 
+	A subboard is a 3x3 region of the board that is played before moving to the next.
+	Subboards can border the main gameboard in any orientation.
+    */
+    gameboard = [{
+		sub: [
+			["0", "0", "0"],
+			["0", "0", "0"],
+			["0", "0", "0"]
+		],
+		x: "0",
+		y: "0"
+	}];
+
+	while (running) {
+
+		// Get input
+		var mk = mouse_getkey(K_NONE, 100, true);
+		var key = mk.key;
+
+		renderBoard(gameboard);
+
+		if (mk) {	
+			if (typeof mk === 'object' && mk.mouse) {
+				// Handle mouse input
+				if (mk.mouse.action === 1) { // Left click
+					// Placeholder
+				}
+			} else {
+				switch (key) {
+					case 'q':
+						running = false;
+						break;
+					// Additional key handling here
+				}
+			}
+		}
+	}
+	pause();
+}
+
+function validateMove(currentBoard, playerMove) {
+	subBoard = findCurrentSubboard(currentBoard);
+	// Validate the move within the context of the current subboard
+	if (subBoard.sub[playerMove.row][playerMove.col] !== "0") {
+		// Invalid move because space is occupied.
+		return false;
+	}
+	return true;
+}
+
+function findCurrentSubboard(currentBoard) {
+	// The current subboard is the last item on the gameboard array
+	var currentSubboard = currentBoard[currentBoard.length - 1];
+	return currentSubboard;
+}
+
+function renderBoard(currentBoard) {
+	// Render the current board to the console
+	// Print from lowest index to highest
+	for (var i = 0; i < currentBoard.length; i++) {
+		var board = currentBoard[i];
+		
+		// Translate board coordinates to center of console
+		var centerX = Math.floor(screenWidth / 2);
+		var centerY = Math.floor(screenHeight / 2);
+		
+		// Calculate starting position for this board
+		var startX = centerX + parseInt(board.x);
+		var startY = centerY + parseInt(board.y);
+		
+		// Render the 3x3 subboard
+		for (var row = 0; row < 3; row++) {
+			for (var col = 0; col < 3; col++) {
+				// Position cursor at the appropriate location
+				console.gotoxy(startX + col, startY + row);
+				// Print the cell value
+				console.print(board.sub[row][col]);
+			}
+		}
+	}
+}
+
 try {
 	console.print("Press any key to play TicTacTriangle...");
 	console.pause();
