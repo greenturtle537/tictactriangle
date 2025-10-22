@@ -187,8 +187,8 @@ function getCharAtPos(virtualX, virtualY, currentBoard) {
 		}
 	}
 	
-	// Position not found in any board
-	return null;
+	// Position not found in any board. This means it is currently unused.
+	return 0;
 }
 
 function renderBoard(currentBoard) {
