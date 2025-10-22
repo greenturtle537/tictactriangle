@@ -205,11 +205,12 @@ function renderBoard(currentBoard) {
 			for (var col = 0; col < 3; col++) {
 				// Position cursor at the appropriate location
 				console.gotoxy(screenPos.x + col, screenPos.y + row);
+				c = console.ansi(ANSI_NORMAL);
 				// Print the cell value
 				if (board.sub[row][col] === "0") {
-					console.print(" ");
+					console.print(c + " ");
 				} else {
-					console.print(board.sub[row][col]);
+					console.print(c + board.sub[row][col]);
 				}
 			}
 		}
@@ -222,7 +223,7 @@ function renderBackground() {
 	for (var y = 0; y < screenHeight; y++) {
 		for (var x = 0; x < screenWidth; x++) {
 			console.gotoxy(x, y);
-			color = console.ansi(BG_LIGHTGRAY);
+			color = console.ansi(BLACK|BG_LIGHTGRAY); // Enums
 			console.print(color + backgroundTile);
 		}
 	}
