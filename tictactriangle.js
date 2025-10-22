@@ -222,8 +222,8 @@ function renderBackground() {
 	for (var y = 0; y < screenHeight; y++) {
 		for (var x = 0; x < screenWidth; x++) {
 			console.gotoxy(x, y);
-			console.ansi("BLACK|HIGH|BG_BLACK");
-			console.print((backgroundTile));
+			color = console.ansi("BLACK|BG_LIGHTGRAY");
+			console.print(color + backgroundTile);
 		}
 	}
 }
