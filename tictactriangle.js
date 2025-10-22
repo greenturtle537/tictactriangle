@@ -89,6 +89,9 @@ function gameLoop() {
 		var mk = mouse_getkey(K_NONE, 100, true);
 		var key = mk.key;
 
+		var playerX = 0;
+		var playerY = 0;
+
 		renderBoard(gameboard);
 
 		if (mk) {	
@@ -103,7 +106,20 @@ function gameLoop() {
 						running = false;
 						break;
 					case 'w', 'a', 's', 'd':
-						moveMarker(key);
+						// Handle cursor movement
+						if (key === 'w') {
+							moveMarker(playerX, playerY, playerX, playerY--, gameboard);
+							playerY--;
+						} else if (key === 'a') {
+							moveMarker(playerX, playerY, playerX--, playerY, gameboard);
+							playerX--;
+						} else if (key === 's') {
+							moveMarker(playerX, playerY, playerX, playerY++, gameboard);
+							playerY++;
+						} else if (key === 'd') {
+							moveMarker(playerX, playerY, playerX++, playerY, gameboard);
+							playerX++;
+						}
 						break;
 				}
 			}
@@ -122,9 +138,17 @@ function validateMove(currentBoard, playerMove) {
 	return true;
 }
 
-function moveMarker(direction) {
-	// Placeholder function to move marker based on direction input
-	// Actual implementation would depend on how marker position is tracked
+function moveMarker(x, y, newx, newy, gameboard) {
+	curChar = getCharAtPos(x, y, gameboard);
+	newChar = getCharAtPos(newx, newy, gameboard);
+	console.ansi("WHITE|NORMAL|BG_BLACK");
+	curPos = virtualToScreenPos(x, y);
+	console.gotoxy(curPos.x, curPos.y);
+	console.print((curChar === "0") ? " " : curChar);
+	console.ansi("WHITE|NORMAL|BG_YELLOW");
+	newPos = virtualToScreenPos(newx, newy);
+	console.gotoxy(newPos.x, newPos.y);
+	console.print((newChar === "0") ? " " : newChar);
 }
 
 function findCurrentSubboard(currentBoard) {
@@ -133,28 +157,57 @@ function findCurrentSubboard(currentBoard) {
 	return currentSubboard;
 }
 
+function virtualToScreenPos(virtualX, virtualY) {
+	// Translate virtual board position to physical screen position
+	// Board dimensions: 3x3 per subboard
+	var centerX = Math.floor(screenWidth / 2);
+	var centerY = Math.floor(screenHeight / 2);
+	
+	return {
+		x: centerX + parseInt(virtualX),
+		y: centerY + parseInt(virtualY)
+	};
+}
+
+function getCharAtPos(virtualX, virtualY, currentBoard) {
+	// Get the character at a virtual position by checking all subboards
+	// Iterate from highest to lowest index (top to bottom of stack)
+	for (var i = currentBoard.length - 1; i >= 0; i--) {
+		var board = currentBoard[i];
+		var boardX = parseInt(board.x);
+		var boardY = parseInt(board.y);
+		
+		// Check if the virtual position falls within this board's 3x3 region
+		var relativeX = virtualX - boardX;
+		var relativeY = virtualY - boardY;
+		
+		// If position is within this board's bounds
+		if (relativeX >= 0 && relativeX < 3 && relativeY >= 0 && relativeY < 3) {
+			return board.sub[relativeY][relativeX];
+		}
+	}
+	
+	// Position not found in any board
+	return null;
+}
+
 function renderBoard(currentBoard) {
 	// Render the current board to the console
 	// Print from lowest index to highest
 	for (var i = 0; i < currentBoard.length; i++) {
 		var board = currentBoard[i];
 		
-		// Translate board coordinates to center of console
-		var centerX = Math.floor(screenWidth / 2);
-		var centerY = Math.floor(screenHeight / 2);
-		
-		// Calculate starting position for this board
-		var startX = centerX + parseInt(board.x);
-		var startY = centerY + parseInt(board.y);
+		// Translate board coordinates to screen position
+		var screenPos = virtualToScreenPos(board.x, board.y);
 		
 		// Render the 3x3 subboard
 		for (var row = 0; row < 3; row++) {
 			for (var col = 0; col < 3; col++) {
 				// Position cursor at the appropriate location
-				console.gotoxy(startX + col, startY + row);
+				console.gotoxy(screenPos.x + col, screenPos.y + row);
 				// Print the cell value
 				if (board.sub[row][col] === "0") {
-					console.print("0");
+					console.print(" ");
 				} else {
 					console.print(board.sub[row][col]);
 				}
