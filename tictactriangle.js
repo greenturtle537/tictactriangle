@@ -23,8 +23,6 @@ var NodeTalk = load({}, "NodeTalk.js");
 
 load("utils.js");
 
-conio.init("AUTO");
-
 var nodeTalk = new NodeTalk();
 
 var Graphic = load({}, "graphic.js");
@@ -221,7 +219,7 @@ function renderBoard(currentBoard) {
 
 function renderBackground() {
 	console.clear();
-	backgroundTile = 178;
+	backgroundTile = "\xb2";
 	color = console.ansi(BLACK|BG_LIGHTGRAY); // Enums
 	console.print(color);
 	for (var y = 0; y < screenHeight; y++) {
