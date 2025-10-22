@@ -79,7 +79,7 @@ function gameLoop() {
 		y: "0"
 	}];
 
-	renderBackground();
+	//renderBackground();
 
 	running = true;
 
@@ -154,7 +154,7 @@ function renderBoard(currentBoard) {
 				console.gotoxy(startX + col, startY + row);
 				// Print the cell value
 				if (board.sub[row][col] === "0") {
-					console.print(" ");
+					console.print("0");
 				} else {
 					console.print(board.sub[row][col]);
 				}
@@ -167,8 +167,10 @@ function renderBackground() {
 	console.clear();
 	backgroundTile = ".";
 	for (var y = 0; y < screenHeight; y++) {
-		console.gotoxy(0, y);
-		console.print((backgroundTile * screenWidth));
+		for (var x = 0; x < screenWidth; x++) {
+			console.gotoxy(x, y);
+			console.print((backgroundTile));
+		}
 	}
 }
 
