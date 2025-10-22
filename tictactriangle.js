@@ -79,7 +79,7 @@ function gameLoop() {
 		y: "0"
 	}];
 
-	//renderBackground();
+	renderBackground();
 
 	running = true;
 
