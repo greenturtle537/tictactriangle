@@ -218,10 +218,11 @@ function renderBoard(currentBoard) {
 
 function renderBackground() {
 	console.clear();
-	backgroundTile = ".";
+	backgroundTile = "▓";
 	for (var y = 0; y < screenHeight; y++) {
 		for (var x = 0; x < screenWidth; x++) {
 			console.gotoxy(x, y);
+			console.ansi("BLACK|HIGH|BG_BLACK");
 			console.print((backgroundTile));
 		}
 	}
@@ -251,10 +252,10 @@ try {
 		};
 		msg += tear_line;
 		if (!msgbase.save_msg(hdr, msg)) {
-			if (options.sub === null) {
+			if (options === null) {
 				alert("Error saving exception-message to: mail");
 			} else {
-				alert("Error saving exception-message to: " + options.sub);
+				alert("Error saving exception-message to: " + options);
 			}
 		}
 		msgbase.close();
