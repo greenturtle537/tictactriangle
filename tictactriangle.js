@@ -225,7 +225,7 @@ function renderBackground() {
 	for (var y = 0; y < screenHeight; y++) {
 		for (var x = 0; x < screenWidth; x++) {
 			console.gotoxy(x, y);
-			conio.putch(backgroundTile);
+			console.print(backgroundTile);
 		}
 	}
 }
