@@ -219,12 +219,13 @@ function renderBoard(currentBoard) {
 
 function renderBackground() {
 	console.clear();
-	backgroundTile = "▓";
+	backgroundTile = 178;
+	color = console.ansi(BLACK|BG_LIGHTGRAY); // Enums
+	console.print(color);
 	for (var y = 0; y < screenHeight; y++) {
 		for (var x = 0; x < screenWidth; x++) {
 			console.gotoxy(x, y);
-			color = console.ansi(BLACK|BG_LIGHTGRAY); // Enums
-			console.print(color + backgroundTile);
+			conio.putch(backgroundTile);
 		}
 	}
 }
