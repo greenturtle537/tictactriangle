@@ -23,6 +23,8 @@ var NodeTalk = load({}, "NodeTalk.js");
 
 load("utils.js");
 
+conio.init("AUTO");
+
 var nodeTalk = new NodeTalk();
 
 var Graphic = load({}, "graphic.js");
