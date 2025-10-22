@@ -81,6 +81,9 @@ function gameLoop() {
 
 	renderBackground();
 
+	var playerX = 0;
+	var playerY = 0;
+
 	running = true;
 
 	while (running) {
@@ -88,9 +91,6 @@ function gameLoop() {
 		// Get input
 		var mk = mouse_getkey(K_NONE, 100, true);
 		var key = mk.key;
-
-		var playerX = 0;
-		var playerY = 0;
 
 		renderBoard(gameboard);
 
@@ -105,7 +105,7 @@ function gameLoop() {
 					case 'q':
 						running = false;
 						break;
-					case 'w', 'a', 's', 'd':
+					case 'w' || 'a' || 's' || 'd':
 						// Handle cursor movement
 						if (key === 'w') {
 							moveMarker(playerX, playerY, playerX, playerY--, gameboard);
