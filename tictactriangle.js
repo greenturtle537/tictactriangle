@@ -141,11 +141,11 @@ function validateMove(currentBoard, playerMove) {
 function moveMarker(x, y, newx, newy, gameboard) {
 	curChar = getCharAtPos(x, y, gameboard);
 	newChar = getCharAtPos(newx, newy, gameboard);
-	console.ansi("WHITE|NORMAL|BG_BLACK");
+	console.ansi(ANSI_NORMAL);
 	curPos = virtualToScreenPos(x, y);
 	console.gotoxy(curPos.x, curPos.y);
 	console.print((curChar === "0") ? " " : curChar);
-	console.ansi("WHITE|NORMAL|BG_YELLOW");
+	console.ansi(BG_YELLOW);
 	newPos = virtualToScreenPos(newx, newy);
 	console.gotoxy(newPos.x, newPos.y);
 	console.print((newChar === "0") ? " " : newChar);
