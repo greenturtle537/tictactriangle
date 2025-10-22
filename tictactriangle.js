@@ -156,7 +156,7 @@ function renderBoard(currentBoard) {
 				if (board.sub[row][col] === "0") {
 					console.print(" ");
 				} else {
-					console.print("[1;33;49m" + board.sub[row][col] + "[0m"); // Color code tomfoolery
+					console.print(board.sub[row][col]);
 				}
 			}
 		}
