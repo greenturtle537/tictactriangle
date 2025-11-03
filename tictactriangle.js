@@ -392,8 +392,8 @@ function renderBoard(currentBoard) {
 				console.gotoxy(screenPos.x + col, screenPos.y + row);
 				// Print the cell value
 				console.print(console.ansi(ANSI_NORMAL));
-				//console.print(fc);
-				console.print(bc);
+				console.print(fc);
+				//console.print(bc);
 
 				if (board.sub[row][col] === "0") {
 					console.print(" ");
