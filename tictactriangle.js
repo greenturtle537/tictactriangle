@@ -79,8 +79,8 @@ function gameLoop() {
 		],
 		x: 0,
 		y: 0,
-		bc: BG_BLACK,
-		fc: BLUE
+		bc: BG_LIGHTGRAY,
+		fc: BLACK
 	}];
 
 	renderBackground();
