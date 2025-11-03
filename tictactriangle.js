@@ -232,7 +232,7 @@ function checkSubboardLocation(currentBoard, x, y) {
 function highlightSubboard(currentBoard, x, y, color=BG_CYAN) {
 	// Highlight the subboard at the specified coordinates
 	var screenPos = virtualToScreenPos(x, y);
-	var c = console.ansi(BG_CYAN);
+	var c = console.ansi(color);
 	for (var row = 0; row < 3; row++) {
 		for (var col = 0; col < 3; col++) {
 			console.gotoxy(screenPos.x + col, screenPos.y + row);
