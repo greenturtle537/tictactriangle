@@ -220,8 +220,16 @@ function validateMove(currentBoard, playerMove) {
 }
 
 function playMove(currentBoard, playerMove, playerChar) {
-	subBoard = findCurrentSubboard(currentBoard);
-	subBoard.sub[playerMove.row][playerMove.col] = playerChar;
+	var localMove = globalToLocalMove(currentBoard, playerMove.col, playerMove.row);
+	
+	// Validate that the position is within a subboard
+	if (!localMove) {
+		return false; // Position not within any subboard
+	}
+	
+	// Place the move in the subboard
+	localMove.subboard.sub[localMove.row][localMove.col] = playerChar;
+	return true;
 }
 
 function fullSubboard(subBoard) {
