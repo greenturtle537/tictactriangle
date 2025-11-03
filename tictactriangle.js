@@ -78,7 +78,8 @@ function gameLoop() {
 			["0", "0", "0"]
 		],
 		x: 0,
-		y: 0
+		y: 0,
+		color: BLACK|BG_WHITE
 	}];
 
 	renderBackground();
@@ -158,7 +159,7 @@ function gameLoop() {
 							highlightOn = true;
 						} else {
 							if (checkSubboardLocation(gameboard, playerX, playerY)) {
-								newSubboard(gameboard, playerX, playerY);
+								newSubboard(gameboard, playerX, playerY, ANSI_NORMAL);
 								highlightOn = false;
 								renderBoard(gameboard);
 							}
@@ -293,7 +294,7 @@ function highlightSubboard(x, y, color) {
 	}
 }
 
-function newSubboard(currentBoard, x, y) {
+function newSubboard(currentBoard, x, y, color) {
 	// Create a new subboard at the specified coordinates
 	var newBoard = {
 		sub: [
@@ -302,7 +303,8 @@ function newSubboard(currentBoard, x, y) {
 			["0", "0", "0"]
 		],
 		x: x,
-		y: y
+		y: y,
+		color: color
 	};
 	currentBoard.push(newBoard);
 }
