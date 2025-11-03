@@ -7,7 +7,7 @@ const ini_section = "tictactriangle"; // ini file section
 const tictactriangle_title = js.exec_dir + "tictactriangle.ans";
 const tictactriangle_title_xbin = js.exec_dir + "tictactriangle.xbin";
 
-var debug = false; //Debug flag
+var debug = true; //Debug flag
 
 var options = load({}, "modopts.js", ini_section);
 
@@ -94,6 +94,11 @@ function gameLoop() {
 
 		renderBoard(gameboard);
 
+		if (debug) {
+			console.gotoxy(1, 1);
+			console.print("PX: " + playerX + " PY: " + playerY + " Key: " + key + "   ");
+		}
+
 		if (mk) {	
 			if (typeof mk === 'object' && mk.mouse) {
 				// Handle mouse input
@@ -105,21 +110,21 @@ function gameLoop() {
 					case 'q':
 						running = false;
 						break;
-					case 'w' || 'a' || 's' || 'd':
-						// Handle cursor movement
-						if (key === 'w') {
-							moveMarker(playerX, playerY, playerX, playerY--, gameboard);
-							playerY--;
-						} else if (key === 'a') {
-							moveMarker(playerX, playerY, playerX--, playerY, gameboard);
-							playerX--;
-						} else if (key === 's') {
-							moveMarker(playerX, playerY, playerX, playerY++, gameboard);
-							playerY++;
-						} else if (key === 'd') {
-							moveMarker(playerX, playerY, playerX++, playerY, gameboard);
-							playerX++;
-						}
+					case 'w':
+						moveMarker(playerX, playerY, playerX, playerY - 1, gameboard);
+						playerY--;
+						break;
+					case 'a':
+						moveMarker(playerX, playerY, playerX - 1, playerY, gameboard);
+						playerX--;
+						break;
+					case 's':
+						moveMarker(playerX, playerY, playerX, playerY + 1, gameboard);
+						playerY++;
+						break;
+					case 'd':
+						moveMarker(playerX, playerY, playerX + 1, playerY, gameboard);
+						playerX++;
 						break;
 				}
 			}
