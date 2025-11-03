@@ -93,6 +93,7 @@ function gameLoop() {
 		var key = mk.key;
 
 		renderBoard(gameboard);
+		moveMarker(playerX, playerY, playerX, playerY, gameboard); // To ensure highlighting after render draw. TODO: Remove
 
 		if (debug) {
 			console.gotoxy(1, 1);
@@ -193,7 +194,7 @@ function getCharAtPos(virtualX, virtualY, currentBoard) {
 	}
 	
 	// Position not found in any board. This means it is currently unused.
-	return 0;
+	return "0";
 }
 
 function renderBoard(currentBoard) {
@@ -208,7 +209,6 @@ function renderBoard(currentBoard) {
 		// Render the 3x3 subboard
 		for (var row = 0; row < 3; row++) {
 			for (var col = 0; col < 3; col++) {
-				// Position cursor at the appropriate location
 				console.gotoxy(screenPos.x + col, screenPos.y + row);
 				c = console.ansi(ANSI_NORMAL);
 				// Print the cell value
