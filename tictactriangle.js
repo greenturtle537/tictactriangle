@@ -83,6 +83,7 @@ function gameLoop() {
 
 	var playerX = 0;
 	var playerY = 0;
+	turn = 0; // 0 = player 1, 1 = player 2
 
 	running = true;
 
@@ -127,6 +128,15 @@ function gameLoop() {
 						moveMarker(playerX, playerY, playerX + 1, playerY, gameboard);
 						playerX++;
 						break;
+					case 'e':
+						if (validateMove(gameboard, {row: playerY, col: playerX})) {
+							playMove(gameboard, {row: playerY, col: playerX}, 
+								(turn === 0) ? "x" : "o"
+							);
+							turn = (turn === 0) ? 1 : 0; // Switch turns
+						}
+						
+					// End of switch-case
 				}
 			}
 		}
@@ -142,6 +152,11 @@ function validateMove(currentBoard, playerMove) {
 		return false;
 	}
 	return true;
+}
+
+function playMove(currentBoard, playerMove, playerChar) {
+	subBoard = findCurrentSubboard(currentBoard);
+	subBoard.sub[playerMove.row][playerMove.col] = playerChar;
 }
 
 function moveMarker(x, y, newx, newy, gameboard) {
