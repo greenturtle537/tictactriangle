@@ -31,7 +31,7 @@ var screenWidth = 80;
 var screenHeight = 24;
 
 var colorPairs = [
-	{ fc: LIGHTGRAY, bc: BG_BLACK }, // This is "white", actual WHITE is a bright color
+	{ fc: ANSI_NORMAL, bc: BG_BLACK },
 	{ fc: BLACK, bc: BG_LIGHTGRAY },
 	{ fc: BLUE, bc: BG_BROWN },
 	{ fc: RED, bc: BG_CYAN },
@@ -459,14 +459,15 @@ function renderBoard(currentBoard) {
 		
 		// Translate board coordinates to screen position
 		var screenPos = virtualToScreenPos(board.x, board.y);
+		var bc = console.ansi(board.bc);
+		var fc = console.ansi(board.fc);
 		// Render the 3x3 subboard
 		for (var row = 0; row < 3; row++) {
 			for (var col = 0; col < 3; col++) {
 				console.gotoxy(screenPos.x + col, screenPos.y + row);
-				// Print the cell value - reset first, then apply colors
-				console.print(console.ansi(ANSI_NORMAL)); // Reset attributes first
-				console.print(console.ansi(board.bc));     // Apply background color FIRST
-				console.print(console.ansi(board.fc));     // Apply foreground color SECOND
+				// Print the cell value
+				console.print(fc);
+				console.print(bc);
 
 				if (board.sub[row][col] === "0") {
 					console.print(" ");
