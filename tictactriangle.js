@@ -116,7 +116,7 @@ function gameLoop() {
 		var key = mk.key;
 
 		renderBoard(gameboard);
-		moveMarker(playerX, playerY, playerX, playerY, gameboard); // To ensure highlighting after render draw. TODO: Remove
+		//moveMarker(playerX, playerY, playerX, playerY, gameboard); // To ensure highlighting after render draw. TODO: Remove
 
 		if (highlightOn) {
 			highlightSubboard(highlightX, highlightY, ANSI_NORMAL); // Remove old highlight
