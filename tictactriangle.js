@@ -79,8 +79,8 @@ function gameLoop() {
 		],
 		x: 0,
 		y: 0,
-		bg: BG_BLACK,
-		fg: WHITE
+		bc: BG_BLACK,
+		fc: BLUE
 	}];
 
 	renderBackground();
@@ -295,10 +295,10 @@ function highlightSubboard(x, y, color) {
 	}
 }
 
-function newSubboard(currentBoard, x, y, bg, fg) {
+function newSubboard(currentBoard, x, y, bc, fc) {
 	// Create a new subboard at the specified coordinates
-	bg = bg || ANSI_NORMAL; // Yeah we using old school js
-	fg = fg || ANSI_NORMAL;
+	bc = bc || ANSI_NORMAL; // Yeah we using old school js
+	fc = fc || ANSI_NORMAL;
 	var newBoard = {
 		sub: [
 			["0", "0", "0"],
@@ -307,8 +307,8 @@ function newSubboard(currentBoard, x, y, bg, fg) {
 		],
 		x: x,
 		y: y,
-		bg: bg,
-		fg: fg
+		bc: bc,
+		fc: fc
 	};
 	currentBoard.push(newBoard);
 }
@@ -384,16 +384,16 @@ function renderBoard(currentBoard) {
 		
 		// Translate board coordinates to screen position
 		var screenPos = virtualToScreenPos(board.x, board.y);
-		var bc = console.ansi(board.bg);
-		var fc = console.ansi(board.fg);
+		var bc = console.ansi(board.bc);
+		var fc = console.ansi(board.fc);
 		// Render the 3x3 subboard
 		for (var row = 0; row < 3; row++) {
 			for (var col = 0; col < 3; col++) {
 				console.gotoxy(screenPos.x + col, screenPos.y + row);
 				// Print the cell value
 				console.print(console.ansi(ANSI_NORMAL));
-				console.print(fc);
-				//console.print(bc);
+				//console.print(fc);
+				console.print(bc);
 
 				if (board.sub[row][col] === "0") {
 					console.print(" ");
