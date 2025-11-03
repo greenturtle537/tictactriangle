@@ -193,7 +193,7 @@ function checkSubboardLocation(currentBoard, x, y) {
 		// Note that every board occupies a 3x3 area starting at (board.x, board.y)
 		for (var dx = 0; dx < 3; dx++) {
 			for (var dy = 0; dy < 3; dy++) {
-				if (board.x + dx == x && board.y + dy == y) {
+				if (board.x + dx === x && board.y + dy === y) {
 					return false; // Overlaps existing subboard
 				}
 			}
