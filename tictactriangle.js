@@ -195,7 +195,7 @@ function checkSubboardLocation(currentBoard, x, y) {
 			for (var by = 0; by < 3; by++) {
 				for (var dx = 0; dx < 3; dx++) {
 					for (var dy = 0; dy < 3; dy++) { // TODO: Let's not use this many for loops
-						if (board.x + bx + dx === x && board.y + by + dy === y) {
+						if (board.x + bx - dx === x && board.y + by - dy === y) {
 							return false; // Overlaps existing subboard
 						}
 					}
