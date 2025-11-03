@@ -31,7 +31,7 @@ var screenWidth = 80;
 var screenHeight = 24;
 
 var colorPairs = [
-	{ fc: ANSI_NORMAL, bc: BG_BLACK },
+	{ fc: LIGHTGRAY, bc: BG_BLACK }, // This is "white", actual WHITE is a bright color
 	{ fc: BLACK, bc: BG_LIGHTGRAY },
 	{ fc: BLUE, bc: BG_BROWN },
 	{ fc: RED, bc: BG_CYAN },
@@ -466,6 +466,7 @@ function renderBoard(currentBoard) {
 			for (var col = 0; col < 3; col++) {
 				console.gotoxy(screenPos.x + col, screenPos.y + row);
 				// Print the cell value
+				console.print(console.ansi(ANSI_NORMAL)); // Reset attributes first
 				console.print(fc);
 				console.print(bc);
 
