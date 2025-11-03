@@ -135,13 +135,20 @@ function gameLoop() {
 							);
 							turn = (turn === 0) ? 1 : 0; // Switch turns
 						}
+					case 'r':
+						// Highlight new subboard location
+						if (checkSubboardLocation(gameboard, playerX, playerY)) {
+							highlightSubboard(gameboard, playerX, playerY);
+							newSubboard(gameboard, playerX, playerY);
+						}
+						break;
 						
 					// End of switch-case
 				}
 			}
 		}
 	}
-	pause();
+	console.pause();
 }
 
 function validateMove(currentBoard, playerMove) {
@@ -157,6 +164,66 @@ function validateMove(currentBoard, playerMove) {
 function playMove(currentBoard, playerMove, playerChar) {
 	subBoard = findCurrentSubboard(currentBoard);
 	subBoard.sub[playerMove.row][playerMove.col] = playerChar;
+}
+
+function fullSubboard(subBoard) {
+	// Check if all spaces in the subboard are occupied
+	for (var row = 0; row < 3; row++) {
+		for (var col = 0; col < 3; col++) {
+			if (subBoard.sub[row][col] === "0") {
+				return false; // Found an empty space
+			}
+		}
+	}
+	return true; // All spaces are occupied
+}
+
+function checkSubboardLocation(currentBoard, x, y) {
+	/* Check if a subboard can be created at the specified coordinates.
+	*  A subboard can be created if no existing subboard occupies that space
+	   and it is adjacent to an existing subboard.
+	*/
+	// Check if subboard overlaps at (x, y)
+	for (var i = 0; i < currentBoard.length; i++) {
+		var board = currentBoard[i];
+		if (board.x == x && board.y == y) {
+			return false; // Overlaps existing subboard
+		}
+	}
+	// Check adjacency to existing subboards
+	for (var i = 0; i < currentBoard.length; i++) {
+		var board = currentBoard[i];
+		if (Math.abs(board.x - x) <= 3 && Math.abs(board.y - y) <= 3) {
+			return true; // Adjacent to existing subboard
+		}
+	}
+	return false; // Not adjacent to any existing subboard
+}
+
+function highlightSubboard(currentBoard, x, y) {
+	// Highlight the subboard at the specified coordinates
+	var screenPos = virtualToScreenPos(x, y);
+	var c = console.ansi(BG_YELLOW);
+	for (var row = 0; row < 3; row++) {
+		for (var col = 0; col < 3; col++) {
+			console.gotoxy(screenPos.x + col, screenPos.y + row);
+			console.print(c + " ");
+		}
+	}
+}
+
+function newSubboard(currentBoard, x, y) {
+	// Create a new subboard at the specified coordinates
+	var newBoard = {
+		sub: [
+			["0", "0", "0"],
+			["0", "0", "0"],
+			["0", "0", "0"]
+		],
+		x: x,
+		y: y
+	};
+	currentBoard.push(newBoard);
 }
 
 function moveMarker(x, y, newx, newy, gameboard) {
