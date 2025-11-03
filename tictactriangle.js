@@ -87,6 +87,10 @@ function gameLoop() {
 	var playerY = 0;
 	turn = 0; // 0 = player 1, 1 = player 2
 
+	highlightOn = false;
+	highlightX = 0;
+	highlightY = 0;
+
 	renderBoard(gameboard);
 
 	running = true;
@@ -97,8 +101,14 @@ function gameLoop() {
 		var mk = mouse_getkey(K_NONE, 100, true);
 		var key = mk.key;
 
-		//renderBoard(gameboard);
+		renderBoard(gameboard);
 		moveMarker(playerX, playerY, playerX, playerY, gameboard); // To ensure highlighting after render draw. TODO: Remove
+
+		if (highlightOn) {
+			if (checkSubboardLocation(gameboard, playerX, playerY)) {
+				highlightSubboard(gameboard, playerX, playerY)
+			};
+		}
 
 		if (debug) {
 			console.gotoxy(1, 1);
@@ -133,21 +143,24 @@ function gameLoop() {
 						playerX++;
 						break;
 					case 'e':
-						if (validateMove(gameboard, {row: playerY, col: playerX})) {
-							playMove(gameboard, {row: playerY, col: playerX}, 
-								(turn === 0) ? "x" : "o"
-							);
-							turn = (turn === 0) ? 1 : 0; // Switch turns
-							renderBoard(gameboard);
-						}
-					case 'r':
-						// Highlight new subboard location
-						if (checkSubboardLocation(gameboard, playerX, playerY)) {
-							highlightSubboard(gameboard, playerX, playerY);
-							//newSubboard(gameboard, playerX + 1, playerY + 1);
+						if (!(fullSubboard(findCurrentSubboard(gameboard)))) {
+							if (validateMove(gameboard, {row: playerY, col: playerX})) {
+								playMove(gameboard, {row: playerY, col: playerX}, 
+									(turn === 0) ? "x" : "o"
+								);
+								turn = (turn === 0) ? 1 : 0; // Switch turns
+								renderBoard(gameboard);
+							}
+						} else if (highlightOn === false) {
+							highlightOn = true;
+						} else {
+							if (checkSubboardLocation(gameboard, playerX, playerY)) {
+								newSubboard(gameboard, playerX, playerY);
+								highlightOn = false;
+								renderBoard(gameboard);
+							}
 						}
 						break;
-						
 					// End of switch-case
 				}
 			}
