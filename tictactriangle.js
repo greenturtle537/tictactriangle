@@ -466,7 +466,6 @@ function renderBoard(currentBoard) {
 			for (var col = 0; col < 3; col++) {
 				console.gotoxy(screenPos.x + col, screenPos.y + row);
 				// Print the cell value
-				console.print(console.ansi(ANSI_NORMAL));
 				console.print(fc);
 				console.print(bc);
 
