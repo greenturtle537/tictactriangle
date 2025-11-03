@@ -16,6 +16,17 @@ var options = load({}, "modopts.js", ini_section);
 var screenWidth = 80;
 var screenHeight = 24;
 
+var colorPairs = [
+	{ fg: BLACK, bg: BG_LIGHTGRAY },
+	{ fg: BLUE, bg: BG_BROWN },
+	{ fg: RED, bg: BG_CYAN },
+	{ fg: GREEN, bg: BG_MAGENTA },
+	{ fg: CYAN, bg: BG_RED },
+	{ fg: MAGENTA, bg: BG_GREEN },
+	{ fg: YELLOW, bg: BG_BLUE },
+	{ fg: ANSI_NORMAL, bg: BG_BLACK }
+]
+
 BACKGROUND_TILE = "\xb0"; // Light shade block character
 
 // TicTacTriangle global variables
@@ -160,7 +171,10 @@ function gameLoop() {
 							highlightOn = true;
 						} else {
 							if (checkSubboardLocation(gameboard, playerX, playerY)) {
-								newSubboard(gameboard, playerX, playerY, ANSI_NORMAL);
+								var colorPair = freeColorPair(gameboard, playerX, playerY);
+								var bc = colorPair.bg;
+								var fc = colorPair.fg;
+								newSubboard(gameboard, playerX, playerY, bc, fc);
 								highlightOn = false;
 								renderBoard(gameboard);
 							}
@@ -281,6 +295,66 @@ function checkSubboardLocation(currentBoard, x, y) {
 		}
 	}
 	return false; // Not adjacent to any existing subboard
+}
+
+function findAdjacentSubboards(currentBoard, x, y) {
+	/* Find all subboards that are adjacent to the specified coordinates.
+	*  Uses the same adjacency rules as checkSubboardLocation:
+	*  - Must share an edge (not just a corner)
+	*  - Returns an array of adjacent subboard objects
+	*/
+	var adjacentBoards = [];
+	
+	for (var i = 0; i < currentBoard.length; i++) {
+		var board = currentBoard[i];
+		var dx = Math.abs(board.x - x);
+		var dy = Math.abs(board.y - y);
+		
+		// Valid if sharing an edge: one distance <= 3 AND the other distance <= 2
+		// This prevents diagonal-only adjacency where both distances are 3
+		if (dx <= 3 && dy <= 3 && !(dx === 3 && dy === 3)) {
+			adjacentBoards.push(board);
+		}
+	}
+	
+	return adjacentBoards;
+}
+
+function freeColorPair(currentBoard, x, y) {
+	/* Determine a color pair that is visually distinct from all adjacent subboards.
+	*  Returns an object with { fg, bg } properties from the colorPairs array
+	*  that is not used by any adjacent subboard.
+	*/
+	var adjacentBoards = findAdjacentSubboards(currentBoard, x, y);
+	
+	// Collect color pairs used by adjacent boards
+	var usedColorPairs = [];
+	for (var i = 0; i < adjacentBoards.length; i++) {
+		var board = adjacentBoards[i];
+		usedColorPairs.push({ fg: board.fc, bg: board.bc });
+	}
+	
+	// Iterate through available color pairs to find one not in use
+	for (var j = 0; j < colorPairs.length; j++) {
+		var candidate = colorPairs[j];
+		var isUsed = false;
+		
+		// Check if this candidate is used by any adjacent board
+		for (var k = 0; k < usedColorPairs.length; k++) {
+			if (candidate.fg === usedColorPairs[k].fg && candidate.bg === usedColorPairs[k].bg) {
+				isUsed = true;
+				break;
+			}
+		}
+		
+		// If not used, return this color pair
+		if (!isUsed) {
+			return candidate;
+		}
+	}
+	
+	// If all color pairs are used (unlikely), return the first one
+	return colorPairs[0];
 }
 
 function highlightSubboard(x, y, color) {
