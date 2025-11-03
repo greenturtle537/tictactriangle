@@ -206,7 +206,7 @@ function checkSubboardLocation(currentBoard, x, y) {
 			return true; // Adjacent to existing subboard
 		}
 	}
-	return false; // Not adjacent to any existing subboard
+	return true; // Not adjacent to any existing subboard
 }
 
 function highlightSubboard(currentBoard, x, y) {
