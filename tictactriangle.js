@@ -7,32 +7,12 @@ const ini_section = "tictactriangle"; // ini file section
 const tictactriangle_title = js.exec_dir + "tictactriangle.ans";
 const tictactriangle_title_xbin = js.exec_dir + "tictactriangle.xbin";
 
-var debug = true; //Debug flag
-
 var options = load({}, "modopts.js", ini_section);
 
-// TicTacTriangle options
+// Imports
 
-var screenWidth = 80;
-var screenHeight = 24;
-
-var colorPairs = [
-	{ fg: BLACK, bg: BG_LIGHTGRAY },
-	{ fg: BLUE, bg: BG_BROWN },
-	{ fg: RED, bg: BG_CYAN },
-	{ fg: GREEN, bg: BG_MAGENTA },
-	{ fg: CYAN, bg: BG_RED },
-	{ fg: MAGENTA, bg: BG_GREEN },
-	{ fg: YELLOW, bg: BG_BLUE },
-	{ fg: ANSI_NORMAL, bg: BG_BLACK }
-]
-
-BACKGROUND_TILE = "\xb0"; // Light shade block character
-
-// TicTacTriangle global variables
 var MessageWindow = load({}, "MessageWindow.js");
 var NodeTalk = load({}, "NodeTalk.js");
-
 
 load("utils.js");
 
@@ -43,6 +23,27 @@ var sauce_lib = load({}, "sauce_lib.js");
 
 require("sbbsdefs.js", "K_NONE");
 require("mouse_getkey.js", "mouse_getkey");
+
+
+// TicTacTriangle options
+
+var screenWidth = 80;
+var screenHeight = 24;
+
+var colorPairs = [
+	{ fc: BLACK, bc: BG_LIGHTGRAY },
+	{ fc: BLUE, bc: BG_BROWN },
+	{ fc: RED, bc: BG_CYAN },
+	{ fc: GREEN, bc: BG_MAGENTA },
+	{ fc: CYAN, bc: BG_RED },
+	{ fc: MAGENTA, bc: BG_GREEN },
+	{ fc: YELLOW, bc: BG_BLUE },
+	{ fc: ANSI_NORMAL, bc: BG_BLACK }
+]
+
+BACKGROUND_TILE = "\xb0"; // Light shade block character
+
+var debug = true; //Debug flag
 
 function show_image(filename, fx, delay) {
 	var dir = directory(filename);
@@ -172,8 +173,8 @@ function gameLoop() {
 						} else {
 							if (checkSubboardLocation(gameboard, playerX, playerY)) {
 								var colorPair = freeColorPair(gameboard, playerX, playerY);
-								var bc = colorPair.bg;
-								var fc = colorPair.fg;
+								var bc = colorPair.bc;
+								var fc = colorPair.fc;
 								newSubboard(gameboard, playerX, playerY, bc, fc);
 								highlightOn = false;
 								renderBoard(gameboard);
