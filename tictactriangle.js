@@ -188,11 +188,16 @@ function checkSubboardLocation(currentBoard, x, y) {
 	*  A subboard can be created if no existing subboard occupies that space
 	   and it is adjacent to an existing subboard.
 	*/
-	// Check if subboard overlaps at (x, y)
-	for (var i = 0; i < currentBoard.length; i++) {
-		var board = currentBoard[i];
-		if (board.x == x && board.y == y) {
-			return false; // Overlaps existing subboard
+
+	for(var b=0; b<currentBoard.length; b++) {
+		var board = currentBoard[b];
+		// Note that every board occupies a 3x3 area starting at (board.x, board.y)
+		for (var dx = 0; dx < 3; dx++) {
+			for (var dy = 0; dy < 3; dy++) {
+				if (board.x + dx == x && board.y + dy == y) {
+					return false; // Overlaps existing subboard
+				}
+			}
 		}
 	}
 	// Check adjacency to existing subboards
