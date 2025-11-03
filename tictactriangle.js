@@ -172,14 +172,51 @@ function gameLoop() {
 	console.pause();
 }
 
-function validateMove(currentBoard, playerMove) {
-	subBoard = findCurrentSubboard(currentBoard);
-	// Validate the move within the context of the current subboard
-	if (subBoard.sub[playerMove.row][playerMove.col] !== "0") {
-		// Invalid move because space is occupied.
-		return false;
+function globalToLocalMove(currentBoard, globalX, globalY) {
+	/* Convert global coordinates to local subboard coordinates.
+	*  Returns an object with:
+	*  - subboard: the subboard object that contains this position
+	*  - row: local row within the subboard (0-2)
+	*  - col: local column within the subboard (0-2)
+	*  Returns null if the position is not within any subboard.
+	*/
+	for (var i = currentBoard.length - 1; i >= 0; i--) {
+		var board = currentBoard[i];
+		var relativeX = globalX - board.x;
+		var relativeY = globalY - board.y;
+		
+		// Check if position is within this board's 3x3 bounds
+		if (relativeX >= 0 && relativeX < 3 && relativeY >= 0 && relativeY < 3) {
+			return {
+				subboard: board,
+				row: relativeY,
+				col: relativeX
+			};
+		}
 	}
-	return true;
+	return null; // Position not within any subboard
+}
+
+function validateMove(currentBoard, playerMove) {
+	var currentSubboard = findCurrentSubboard(currentBoard);
+	var localMove = globalToLocalMove(currentBoard, playerMove.col, playerMove.row);
+	
+	// Check if the position is within any subboard
+	if (!localMove) {
+		return false; // Position not within any subboard
+	}
+	
+	// Check if the move is in the current active subboard
+	if (localMove.subboard !== currentSubboard) {
+		return false; // Wrong subboard
+	}
+	
+	// Check if the space is unoccupied
+	if (localMove.subboard.sub[localMove.row][localMove.col] !== "0") {
+		return false; // Space is occupied
+	}
+	
+	return true; // Valid move
 }
 
 function playMove(currentBoard, playerMove, playerChar) {
