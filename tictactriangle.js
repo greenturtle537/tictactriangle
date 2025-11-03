@@ -93,7 +93,7 @@ function gameLoop() {
 		var mk = mouse_getkey(K_NONE, 100, true);
 		var key = mk.key;
 
-		renderBoard(gameboard);
+		//renderBoard(gameboard);
 		moveMarker(playerX, playerY, playerX, playerY, gameboard); // To ensure highlighting after render draw. TODO: Remove
 
 		if (debug) {
@@ -134,6 +134,7 @@ function gameLoop() {
 								(turn === 0) ? "x" : "o"
 							);
 							turn = (turn === 0) ? 1 : 0; // Switch turns
+							renderBoard(gameboard);
 						}
 					case 'r':
 						// Highlight new subboard location
