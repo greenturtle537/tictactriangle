@@ -465,8 +465,8 @@ function renderBoard(currentBoard) {
 				console.gotoxy(screenPos.x + col, screenPos.y + row);
 				// Print the cell value - reset first, then apply colors
 				console.print(console.ansi(ANSI_NORMAL)); // Reset attributes first
-				console.print(console.ansi(board.fc));     // Apply foreground color
-				console.print(console.ansi(board.bc));     // Apply background color
+				console.print(console.ansi(board.bc));     // Apply background color FIRST
+				console.print(console.ansi(board.fc));     // Apply foreground color SECOND
 
 				if (board.sub[row][col] === "0") {
 					console.print(" ");
