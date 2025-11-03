@@ -295,8 +295,10 @@ function highlightSubboard(x, y, color) {
 	}
 }
 
-function newSubboard(currentBoard, x, y, bg=ANSI_NORMAL, fg=ANSI_NORMAL) {
+function newSubboard(currentBoard, x, y, bg, fg) {
 	// Create a new subboard at the specified coordinates
+	bg = bg || ANSI_NORMAL; // Yeah we using old school js
+	fg = fg || ANSI_NORMAL;
 	var newBoard = {
 		sub: [
 			["0", "0", "0"],
