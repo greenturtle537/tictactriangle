@@ -236,7 +236,7 @@ function highlightSubboard(x, y, color) {
 	for (var row = 0; row < 3; row++) {
 		for (var col = 0; col < 3; col++) {
 			console.gotoxy(screenPos.x + col, screenPos.y + row);
-			console.print(c + " ");
+			console.print(c + BACKGROUND_TILE);
 		}
 	}
 }
