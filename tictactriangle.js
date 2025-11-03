@@ -142,7 +142,7 @@ function gameLoop() {
 						}
 					case 'r':
 						// Highlight new subboard location
-						if (checkSubboardLocation(gameboard, playerX+1, playerY+1)) {
+						if (checkSubboardLocation(gameboard, playerX, playerY)) {
 							highlightSubboard(gameboard, playerX + 1, playerY + 1);
 							//newSubboard(gameboard, playerX + 1, playerY + 1);
 						}
