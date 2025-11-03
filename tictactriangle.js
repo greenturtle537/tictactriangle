@@ -16,6 +16,8 @@ var options = load({}, "modopts.js", ini_section);
 var screenWidth = 80;
 var screenHeight = 24;
 
+BACKGROUND_TILE = "\xb0"; // Light shade block character
+
 // TicTacTriangle global variables
 var MessageWindow = load({}, "MessageWindow.js");
 var NodeTalk = load({}, "NodeTalk.js");
@@ -85,6 +87,8 @@ function gameLoop() {
 	var playerY = 0;
 	turn = 0; // 0 = player 1, 1 = player 2
 
+	renderBoard(gameboard);
+
 	running = true;
 
 	while (running) {
@@ -139,7 +143,7 @@ function gameLoop() {
 					case 'r':
 						// Highlight new subboard location
 						if (checkSubboardLocation(gameboard, playerX, playerY)) {
-							highlightSubboard(gameboard, playerX, playerY);
+							highlightSubboard(gameboard, playerX + 1, playerY + 1);
 							newSubboard(gameboard, playerX, playerY);
 						}
 						break;
@@ -233,11 +237,21 @@ function moveMarker(x, y, newx, newy, gameboard) {
 	c = console.ansi(ANSI_NORMAL);
 	curPos = virtualToScreenPos(x, y);
 	console.gotoxy(curPos.x, curPos.y);
-	console.print(c + ((curChar === "0") ? " " : curChar));
+	console.print(c + charConvert(curChar));
 	c = console.ansi(BG_RED);
 	newPos = virtualToScreenPos(newx, newy);
 	console.gotoxy(newPos.x, newPos.y);
-	console.print(c + ((newChar === "0") ? " " : newChar));
+	console.print(c + charConvert(newChar));
+}
+
+function charConvert(char) {
+	if (char === "0") {
+		return " ";
+	} else if (char === "B") {
+		return BACKGROUND_TILE;
+	} else {
+		return char;
+	}
 }
 
 function findCurrentSubboard(currentBoard) {
@@ -277,7 +291,7 @@ function getCharAtPos(virtualX, virtualY, currentBoard) {
 	}
 	
 	// Position not found in any board. This means it is currently unused.
-	return "0";
+	return "B";
 }
 
 function renderBoard(currentBoard) {
@@ -307,13 +321,12 @@ function renderBoard(currentBoard) {
 
 function renderBackground() {
 	console.clear();
-	backgroundTile = "\xb0";
 	//color = console.ansi(BLACK|BG_LIGHTGRAY); // Enums
 	//console.print(color);
 	for (var y = 0; y < screenHeight; y++) {
 		for (var x = 0; x < screenWidth; x++) {
 			console.gotoxy(x, y);
-			console.print(backgroundTile);
+			console.print(BACKGROUND_TILE);
 		}
 	}
 }
