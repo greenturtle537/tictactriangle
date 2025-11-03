@@ -102,7 +102,7 @@ function gameLoop() {
 
 		if (debug) {
 			console.gotoxy(1, 1);
-			console.print("PX: " + playerX + " PY: " + playerY + " Key: " + key + "   "+ "Sub OK: " + checkSubboardLocation(gameboard, playerX+1, playerY+1)+"   ");
+			console.print("PX: " + playerX + " PY: " + playerY + " Key: " + key + "   "+ "Sub OK: " + checkSubboardLocation(gameboard, playerX, playerY)+"   ");
 		}
 
 		if (mk) {	
@@ -206,7 +206,7 @@ function checkSubboardLocation(currentBoard, x, y) {
 			return true; // Adjacent to existing subboard
 		}
 	}
-	return true; // Not adjacent to any existing subboard
+	return false; // Not adjacent to any existing subboard
 }
 
 function highlightSubboard(currentBoard, x, y) {
