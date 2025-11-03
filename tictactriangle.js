@@ -459,16 +459,14 @@ function renderBoard(currentBoard) {
 		
 		// Translate board coordinates to screen position
 		var screenPos = virtualToScreenPos(board.x, board.y);
-		var bc = console.ansi(board.bc);
-		var fc = console.ansi(board.fc);
 		// Render the 3x3 subboard
 		for (var row = 0; row < 3; row++) {
 			for (var col = 0; col < 3; col++) {
 				console.gotoxy(screenPos.x + col, screenPos.y + row);
-				// Print the cell value
+				// Print the cell value - reset first, then apply colors
 				console.print(console.ansi(ANSI_NORMAL)); // Reset attributes first
-				console.print(fc);
-				console.print(bc);
+				console.print(console.ansi(board.fc));     // Apply foreground color
+				console.print(console.ansi(board.bc));     // Apply background color
 
 				if (board.sub[row][col] === "0") {
 					console.print(" ");
