@@ -28,7 +28,7 @@ var   LIGHTCYAN		=11;
 var   LIGHTRED		=12;
 var   LIGHTMAGENTA	=13;
 var   YELLOW		=14;
-var   WHITE			=15;
+var   WHITE			=15; // Problems with this one
 
 // This array allows a fast color-index -> name lookup
 var colors = [
