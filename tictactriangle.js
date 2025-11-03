@@ -105,8 +105,8 @@ function gameLoop() {
 		moveMarker(playerX, playerY, playerX, playerY, gameboard); // To ensure highlighting after render draw. TODO: Remove
 
 		if (highlightOn) {
+			highlightSubboard(highlightX, highlightY, ANSI_NORMAL); // Remove old highlight
 			if (checkSubboardLocation(gameboard, playerX, playerY)) {
-				highlightSubboard(highlightX, highlightY, ANSI_NORMAL); // Remove old highlight
 				highlightSubboard(playerX, playerY, BG_CYAN); // New highlight
 				highlightX = playerX;
 				highlightY = playerY;
@@ -220,9 +220,16 @@ function checkSubboardLocation(currentBoard, x, y) {
 		}
 	}
 	// Check adjacency to existing subboards
+	// A subboard is adjacent if it shares an edge (not just a corner)
+	// This means at least one dimension must overlap or touch
 	for (var i = 0; i < currentBoard.length; i++) {
 		var board = currentBoard[i];
-		if (Math.abs(board.x - x) <= 3 && Math.abs(board.y - y) <= 3) {
+		var dx = Math.abs(board.x - x);
+		var dy = Math.abs(board.y - y);
+		
+		// Valid if sharing an edge: one distance <= 3 AND the other distance <= 2
+		// This prevents diagonal-only adjacency where both distances are 3
+		if (dx <= 3 && dy <= 3 && !(dx === 3 && dy === 3)) {
 			return true; // Adjacent to existing subboard
 		}
 	}
