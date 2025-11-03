@@ -32,13 +32,13 @@ var screenHeight = 24;
 
 var colorPairs = [
 	{ fc: ANSI_NORMAL, bc: BG_BLACK },
-	{ fc: BLACK, bc: BG_LIGHTGRAY }
+	{ fc: BLACK, bc: BG_LIGHTGRAY },
 	{ fc: BLUE, bc: BG_BROWN },
 	{ fc: RED, bc: BG_CYAN },
 	{ fc: GREEN, bc: BG_MAGENTA },
 	{ fc: CYAN, bc: BG_RED },
 	{ fc: MAGENTA, bc: BG_GREEN },
-	{ fc: YELLOW, bc: BG_BLUE },
+	{ fc: YELLOW, bc: BG_BLUE }
 ]
 
 BACKGROUND_TILE = "\xb0"; // Light shade block character
