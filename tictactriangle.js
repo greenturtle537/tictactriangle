@@ -102,7 +102,7 @@ function gameLoop() {
 
 		if (debug) {
 			console.gotoxy(1, 1);
-			console.print("PX: " + playerX + " PY: " + playerY + " Key: " + key + "   ");
+			console.print("PX: " + playerX + " PY: " + playerY + " Key: " + key + "   "+ "Sub OK: " + checkSubboardLocation(gameboard, playerX+1, playerY+1)+"   ");
 		}
 
 		if (mk) {	
@@ -142,9 +142,9 @@ function gameLoop() {
 						}
 					case 'r':
 						// Highlight new subboard location
-						if (checkSubboardLocation(gameboard, playerX, playerY)) {
+						if (checkSubboardLocation(gameboard, playerX+1, playerY+1)) {
 							highlightSubboard(gameboard, playerX + 1, playerY + 1);
-							newSubboard(gameboard, playerX, playerY);
+							newSubboard(gameboard, playerX + 1, playerY + 1);
 						}
 						break;
 						
