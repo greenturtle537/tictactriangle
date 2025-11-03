@@ -384,7 +384,7 @@ function renderBoard(currentBoard) {
 		
 		// Translate board coordinates to screen position
 		var screenPos = virtualToScreenPos(board.x, board.y);
-		var bg = console.ansi(board.bg);
+		var bg = console.ansi(ANSI_NORMAL);
 		var fg = console.ansi(board.fg);
 		// Render the 3x3 subboard
 		for (var row = 0; row < 3; row++) {
