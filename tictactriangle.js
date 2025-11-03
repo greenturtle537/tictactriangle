@@ -79,7 +79,7 @@ function gameLoop() {
 		],
 		x: 0,
 		y: 0,
-		color: BLACK|BG_WHITE
+		color: BLACK|BG_LIGHTGRAY
 	}];
 
 	renderBackground();
