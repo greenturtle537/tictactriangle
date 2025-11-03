@@ -79,7 +79,8 @@ function gameLoop() {
 		],
 		x: 0,
 		y: 0,
-		color: WHITE|BG_BLACK
+		bg: BG_BLACK,
+		fg: WHITE
 	}];
 
 	renderBackground();
@@ -294,7 +295,7 @@ function highlightSubboard(x, y, color) {
 	}
 }
 
-function newSubboard(currentBoard, x, y, color) {
+function newSubboard(currentBoard, x, y, bg=ANSI_NORMAL, fg=ANSI_NORMAL) {
 	// Create a new subboard at the specified coordinates
 	var newBoard = {
 		sub: [
@@ -304,7 +305,8 @@ function newSubboard(currentBoard, x, y, color) {
 		],
 		x: x,
 		y: y,
-		color: color
+		bg: bg,
+		fg: fg
 	};
 	currentBoard.push(newBoard);
 }
@@ -380,7 +382,7 @@ function renderBoard(currentBoard) {
 		
 		// Translate board coordinates to screen position
 		var screenPos = virtualToScreenPos(board.x, board.y);
-		var c = console.ansi(board.color);
+		var c = console.ansi(board.bg) + console.ansi(board.fg);
 		// Render the 3x3 subboard
 		for (var row = 0; row < 3; row++) {
 			for (var col = 0; col < 3; col++) {
