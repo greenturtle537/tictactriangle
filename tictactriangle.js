@@ -393,7 +393,7 @@ function renderBoard(currentBoard) {
 				// Print the cell value
 				console.print(console.ansi(ANSI_NORMAL));
 				console.print(fc);
-				//console.print(bc);
+				console.print(bc);
 
 				if (board.sub[row][col] === "0") {
 					console.print(" ");
