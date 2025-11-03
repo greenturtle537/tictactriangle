@@ -332,7 +332,7 @@ function freeColorPair(currentBoard, x, y) {
 	var usedColorPairs = [];
 	for (var i = 0; i < adjacentBoards.length; i++) {
 		var board = adjacentBoards[i];
-		usedColorPairs.push({ fg: board.fc, bg: board.bc });
+		usedColorPairs.push({ fc: board.fc, bc: board.bc });
 	}
 	
 	// Iterate through available color pairs to find one not in use
@@ -342,7 +342,7 @@ function freeColorPair(currentBoard, x, y) {
 		
 		// Check if this candidate is used by any adjacent board
 		for (var k = 0; k < usedColorPairs.length; k++) {
-			if (candidate.fg === usedColorPairs[k].fg && candidate.bg === usedColorPairs[k].bg) {
+			if (candidate.fc === usedColorPairs[k].fc && candidate.bc === usedColorPairs[k].bc) {
 				isUsed = true;
 				break;
 			}
