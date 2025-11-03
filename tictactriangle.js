@@ -392,9 +392,9 @@ function renderBoard(currentBoard) {
 				console.gotoxy(screenPos.x + col, screenPos.y + row);
 				// Print the cell value
 				if (board.sub[row][col] === "0") {
-					console.print(bg + " ");
+					console.print(fg + bg + " ");
 				} else {
-					console.print(bg + board.sub[row][col]);
+					console.print(fg + bg + board.sub[row][col]);
 				}
 			}
 		}
