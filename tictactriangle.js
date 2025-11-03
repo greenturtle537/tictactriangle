@@ -384,16 +384,17 @@ function renderBoard(currentBoard) {
 		
 		// Translate board coordinates to screen position
 		var screenPos = virtualToScreenPos(board.x, board.y);
-		var c = console.ansi(board.bg) + console.ansi(board.fg);
+		var bg = console.ansi(board.bg);
+		var fg = console.ansi(board.fg);
 		// Render the 3x3 subboard
 		for (var row = 0; row < 3; row++) {
 			for (var col = 0; col < 3; col++) {
 				console.gotoxy(screenPos.x + col, screenPos.y + row);
 				// Print the cell value
 				if (board.sub[row][col] === "0") {
-					console.print(c + " ");
+					console.print(bg + fg + " ");
 				} else {
-					console.print(c + board.sub[row][col]);
+					console.print(bg + board.sub[row][col]);
 				}
 			}
 		}
