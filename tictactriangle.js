@@ -106,8 +106,8 @@ function gameLoop() {
 
 		if (highlightOn) {
 			if (checkSubboardLocation(gameboard, playerX, playerY)) {
-				highlightSubboard(gameboard, highlightX, highlightY, ANSI_NORMAL); // Remove old highlight
-				highlightSubboard(gameboard, playerX, playerY);
+				highlightSubboard(highlightX, highlightY, ANSI_NORMAL); // Remove old highlight
+				highlightSubboard(playerX, playerY, BG_CYAN); // New highlight
 				highlightX = playerX;
 				highlightY = playerY;
 			};
@@ -229,7 +229,7 @@ function checkSubboardLocation(currentBoard, x, y) {
 	return false; // Not adjacent to any existing subboard
 }
 
-function highlightSubboard(currentBoard, x, y, color=BG_CYAN) {
+function highlightSubboard(x, y, color) {
 	// Highlight the subboard at the specified coordinates
 	var screenPos = virtualToScreenPos(x, y);
 	var c = console.ansi(color);
