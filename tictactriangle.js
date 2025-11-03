@@ -77,8 +77,8 @@ function gameLoop() {
 			["0", "0", "0"],
 			["0", "0", "0"]
 		],
-		x: "0",
-		y: "0"
+		x: 0,
+		y: 0
 	}];
 
 	renderBackground();
@@ -188,9 +188,6 @@ function checkSubboardLocation(currentBoard, x, y) {
 	*  A subboard can be created if no existing subboard occupies that space
 	   and it is adjacent to an existing subboard.
 	*/
-	x = x+1;
-	y = y+1;
-
 	for(var b=0; b<currentBoard.length; b++) {
 		var board = currentBoard[b];
 		// Note that every board occupies a 3x3 area starting at (board.x, board.y)
