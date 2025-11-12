@@ -474,13 +474,12 @@ function countInLine(currentBoard, x, y, dx, dy, playerChar) {
 	*  Triangles count as matching any player.
 	*/
 	var coordinates = [];
+	var extraChar = null;
 
 	if (playerChar === "x") {
 		extraChar = "X";
 	} else if (playerChar === "o") {
 		extraChar = "O";
-	} else {
-		extraChar = null;
 	}
 
 	for (var i = 0; i < SCORE_DEPTH; i++) {
