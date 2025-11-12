@@ -503,6 +503,7 @@ function countUnscoredInLine(currentBoard, x, y, dx, dy, playerChar) {
     *  which is all lowercase characters.
 	*/
 	var coordinates = [];
+	var extraChar = "";
 
 	for (var i = 0; i < 10; i++) {
 		var nx = x + dx * i;
