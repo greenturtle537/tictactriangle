@@ -99,7 +99,10 @@ function gameLoop() {
 
 	var playerX = 0;
 	var playerY = 0;
-	turn = 0; // 0 = player 1, 1 = player 2
+	var turn = 0; // 0 = player 1, 1 = player 2
+
+	var player1score = 0;
+	var player2score = 0;
 
 	highlightOn = false;
 	highlightX = 0;
@@ -107,7 +110,7 @@ function gameLoop() {
 
 	moves = []; 
 	// Series of strings representing moves made
-	// Format is "{x,y}"
+	// Format is "{player,x,y}"
 
 	renderBoard(gameboard);
 
@@ -133,7 +136,8 @@ function gameLoop() {
 
 		if (debug) {
 			console.gotoxy(1, 1);
-			console.print("PX: " + playerX + " PY: " + playerY + " Key: " + key + "   "+ "Sub OK: " + checkSubboardLocation(gameboard, playerX, playerY)+"   ");
+			console.print("PX: " + playerX + " PY: " + playerY + " Key: " + key + "   "+ "Turn: " + turn+"   ");
+			//console.print("PX: " + playerX + " PY: " + playerY + " Key: " + key + "   "+ "Sub OK: " + checkSubboardLocation(gameboard, playerX, playerY)+"   ");
 		}
 
 		if (mk) {	
@@ -170,6 +174,7 @@ function gameLoop() {
 									(turn === 0) ? "x" : "o"
 								);
 								turn = (turn === 0) ? 1 : 0; // Switch turns
+								moves.push("{" + ((turn === 0) ? "2" : "1") + "," + playerX + "," + playerY + "}");
 								renderBoard(gameboard);
 							}
 						} else if (highlightOn === false) {
@@ -232,12 +237,23 @@ function validateMove(currentBoard, playerMove) {
 		return false; // Wrong subboard
 	}
 	
-	// Check if the space is unoccupied
-	if (localMove.subboard.sub[localMove.row][localMove.col] !== "0") {
-		return false; // Space is occupied
+	// Check if the space is unoccupied or is a triangle (triangles can be played on)
+	var cellValue = localMove.subboard.sub[localMove.row][localMove.col];
+	if (cellValue !== "0" && cellValue !== "t") {
+		return false; // Space is occupied by x or o
 	}
 	
 	return true; // Valid move
+}
+
+function updateScore(gameboard) {
+	// Move through the entire game stack
+	for (var i = 0; i < gameboard.length; i++) {
+		var board = gameboard[i];
+		// Check rows, columns, and diagonals for a win
+		// We also check neighboring subboards for lines that cross boundaries
+		// Placeholder: Implement scoring logic here
+	}
 }
 
 function playMove(currentBoard, playerMove, playerChar) {
@@ -374,6 +390,96 @@ function highlightSubboard(x, y, color) {
 	}
 }
 
+function countInLine(currentBoard, x, y, dx, dy, playerChar) {
+	/* Count consecutive marks of the given player in a specific direction.
+	*  Returns an array of coordinates {x, y} for each matching cell found.
+	*  This can be used both for validation (check .length) and for scoring
+	*  (iterate through the coordinates to mark them as scored).
+	*  Counts up to 10 cells in the specified direction.
+	*  Triangles count as matching any player.
+	*/
+	var coordinates = [];
+	
+	for (var i = 0; i < 10; i++) {
+		var nx = x + dx * i;
+		var ny = y + dy * i;
+		var cell = getCharAtPos(nx, ny, currentBoard);
+		
+		// Match player's character or triangles
+		if (cell === playerChar || cell === "t") {
+			coordinates.push({x: nx, y: ny});
+		} else {
+			break;
+		}
+	}
+	
+	return coordinates;
+}
+
+function placeTriangles(currentBoard, newBoard, creatorChar) {
+	/* Place triangles on empty cells of the new board where the creator
+	*  could make a scoring move (3+ in a line).
+	*  This is done by temporarily placing the creator's mark and checking
+	*  all four directions (horizontal, vertical, two diagonals).
+	*/
+	
+	for (var row = 0; row < 3; row++) {
+		for (var col = 0; col < 3; col++) {
+			// Skip if cell is not empty
+			if (newBoard.sub[row][col] !== "0") continue;
+			
+			var gx = newBoard.x + col;
+			var gy = newBoard.y + row;
+			
+		// Temporarily place creator's mark
+		newBoard.sub[row][col] = creatorChar;
+		
+		var wouldScore = false;
+		
+		// Check horizontal (left + right + 1)
+		var h_count = countInLine(currentBoard, gx - 1, gy, -1, 0, creatorChar).length +
+		              countInLine(currentBoard, gx + 1, gy, 1, 0, creatorChar).length + 1;
+		if (h_count >= 3) wouldScore = true;
+		
+		// Check vertical (up + down + 1)
+		var v_count = countInLine(currentBoard, gx, gy - 1, 0, -1, creatorChar).length +
+		              countInLine(currentBoard, gx, gy + 1, 0, 1, creatorChar).length + 1;
+		if (v_count >= 3) wouldScore = true;
+		
+		// Check diagonal top-left to bottom-right
+		var d1_count = countInLine(currentBoard, gx - 1, gy - 1, -1, -1, creatorChar).length +
+		               countInLine(currentBoard, gx + 1, gy + 1, 1, 1, creatorChar).length + 1;
+		if (d1_count >= 3) wouldScore = true;
+		
+		// Check diagonal top-right to bottom-left
+		var d2_count = countInLine(currentBoard, gx + 1, gy - 1, 1, -1, creatorChar).length +
+		               countInLine(currentBoard, gx - 1, gy + 1, -1, 1, creatorChar).length + 1;
+		if (d2_count >= 3) wouldScore = true;			// Remove temporary mark and place triangle if it would score
+			if (wouldScore) {
+				newBoard.sub[row][col] = "t";
+			} else {
+				newBoard.sub[row][col] = "0";
+			}
+		}
+	}
+}
+
+function determineCreator(currentBoard) {
+	/* Determine who creates the new board based on the current board's scores.
+	*  - If scores are tied, the current player creates it
+	*  - Otherwise, the player with fewer points creates it
+	*  Returns "x" or "o"
+	*/
+	var currentSubboard = findCurrentSubboard(currentBoard);
+	
+	// TODO: Implement score tracking to determine creator
+	// For now, alternate based on board count (placeholder logic)
+	// In the C code, this checks board->scores[PLAYER_X] vs board->scores[PLAYER_O]
+	
+	// Placeholder: return "x" for even boards, "o" for odd boards
+	return (currentBoard.length % 2 === 0) ? "x" : "o";
+}
+
 function newSubboard(currentBoard, x, y, bc, fc) {
 	// Create a new subboard at the specified coordinates
 	bc = bc || ANSI_NORMAL; // Yeah we using old school js
@@ -389,7 +495,16 @@ function newSubboard(currentBoard, x, y, bc, fc) {
 		bc: bc,
 		fc: fc
 	};
+	
+	// Determine who creates this board
+	var creatorChar = determineCreator(currentBoard);
+	
+	// Add the board to the stack before placing triangles
+	// (so triangle placement can check adjacent cells)
 	currentBoard.push(newBoard);
+	
+	// Place triangles based on creator's potential scoring positions
+	placeTriangles(currentBoard, newBoard, creatorChar);
 }
 
 function moveMarker(x, y, newx, newy, gameboard) {
@@ -410,6 +525,8 @@ function charConvert(char) {
 		return " ";
 	} else if (char === "B") {
 		return BACKGROUND_TILE;
+	} else if (char === "t") {
+		return "T"; // Display triangles as uppercase T
 	} else {
 		return char;
 	}
