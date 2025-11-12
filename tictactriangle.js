@@ -30,6 +30,8 @@ require("mouse_getkey.js", "mouse_getkey");
 var screenWidth = 80;
 var screenHeight = 24;
 
+var SCORE_DEPTH = 10;
+
 var colorPairs = [
 	{ fc: LIGHTGRAY, bc: BG_BLACK },
 	{ fc: BLUE, bc: BG_BROWN },
@@ -78,6 +80,8 @@ function gameLoop() {
     x = player 1
     o = player 2
 	t = triangle space
+	X = player 1 scored
+	O = player 2 scored
 
 	Subboard: 
 	A subboard is a 3x3 region of the board that is played before moving to the next.
@@ -137,6 +141,7 @@ function gameLoop() {
 		if (debug) {
 			console.gotoxy(1, 1);
 			console.print("PX: " + playerX + " PY: " + playerY + " Key: " + key + "   "+ "Turn: " + turn+"   ");
+			console.print(" P1: " + player1score + " P2: " + player2score + "      ");
 			//console.print("PX: " + playerX + " PY: " + playerY + " Key: " + key + "   "+ "Sub OK: " + checkSubboardLocation(gameboard, playerX, playerY)+"   ");
 		}
 
@@ -175,6 +180,12 @@ function gameLoop() {
 								);
 								turn = (turn === 0) ? 1 : 0; // Switch turns
 								moves.push("{" + ((turn === 0) ? "2" : "1") + "," + playerX + "," + playerY + "}");
+								
+								// Update scores after the move
+								var scores = updateScore(gameboard);
+								player1score = scores.player1;
+								player2score = scores.player2;
+								
 								renderBoard(gameboard);
 							}
 						} else if (highlightOn === false) {
@@ -248,12 +259,76 @@ function validateMove(currentBoard, playerMove) {
 
 function updateScore(gameboard) {
 	// Move through the entire game stack
+	var player1Points = 0;
+	var player2Points = 0;
+	
+	// Directions: right, down, down-right, down-left, and their opposites
+	var directions = [
+		{dx: 1, dy: 0},   // right
+		{dx: 0, dy: 1},   // down
+		{dx: 1, dy: 1},   // down-right diagonal
+		{dx: 1, dy: -1},  // down-left diagonal
+		{dx: -1, dy: 0},  // left
+		{dx: 0, dy: -1},  // up
+		{dx: -1, dy: -1}, // up-left diagonal
+		{dx: -1, dy: 1}   // up-right diagonal
+	];
+	
 	for (var i = 0; i < gameboard.length; i++) {
 		var board = gameboard[i];
-		// Check rows, columns, and diagonals for a win
-		// We also check neighboring subboards for lines that cross boundaries
-		// Placeholder: Implement scoring logic here
+		
+		// Check each cell in the subboard
+		for (var row = 0; row < 3; row++) {
+			for (var col = 0; col < 3; col++) {
+				var globalX = board.x + col;
+				var globalY = board.y + row;
+				var cellValue = board.sub[row][col];
+				
+				// Only check unscored positions (lowercase)
+				if (cellValue === 'x' || cellValue === 'o') {
+					var playerChar = cellValue;
+					
+					// Check all 8 directions for this position
+					for (var d = 0; d < directions.length; d++) {
+						var dir = directions[d];
+						var line = countUnscoredInLine(gameboard, globalX, globalY, dir.dx, dir.dy, playerChar);
+						
+						// If we found a line of 3 or more
+						if (line.length >= 3) {
+							// Convert all cells in this line to uppercase
+							for (var l = 0; l < line.length; l++) {
+								var coord = line[l];
+								var localMove = globalToLocalMove(gameboard, coord.x, coord.y);
+								if (localMove) {
+									var currentValue = localMove.subboard.sub[localMove.row][localMove.col];
+									// Convert to uppercase
+									if (currentValue === 'x') {
+										localMove.subboard.sub[localMove.row][localMove.col] = 'X';
+									} else if (currentValue === 'o') {
+										localMove.subboard.sub[localMove.row][localMove.col] = 'O';
+									} else if (currentValue === 't') {
+										localMove.subboard.sub[localMove.row][localMove.col] = 'T';
+									}
+								}
+							}
+							
+							// Award points
+							if (playerChar === 'x') {
+								player1Points += line.length;
+							} else if (playerChar === 'o') {
+								player2Points += line.length;
+							}
+						}
+					}
+				}
+			}
+		}
 	}
+	
+	return {
+		player1: player1Points,
+		player2: player2Points
+	};
 }
 
 function playMove(currentBoard, playerMove, playerChar) {
@@ -399,14 +474,22 @@ function countInLine(currentBoard, x, y, dx, dy, playerChar) {
 	*  Triangles count as matching any player.
 	*/
 	var coordinates = [];
-	
-	for (var i = 0; i < 10; i++) {
+
+	if (playerChar === "x") {
+		extraChar = "X";
+	} else if (playerChar === "o") {
+		extraChar = "O";
+	} else {
+		extraChar = null;
+	}
+
+	for (var i = 0; i < SCORE_DEPTH; i++) {
 		var nx = x + dx * i;
 		var ny = y + dy * i;
 		var cell = getCharAtPos(nx, ny, currentBoard);
 		
 		// Match player's character or triangles
-		if (cell === playerChar || cell === "t") {
+		if (cell === playerChar || cell === "t" || cell === "T" || cell === extraChar) {
 			coordinates.push({x: nx, y: ny});
 		} else {
 			break;
@@ -416,52 +499,29 @@ function countInLine(currentBoard, x, y, dx, dy, playerChar) {
 	return coordinates;
 }
 
-function placeTriangles(currentBoard, newBoard, creatorChar) {
-	/* Place triangles on empty cells of the new board where the creator
-	*  could make a scoring move (3+ in a line).
-	*  This is done by temporarily placing the creator's mark and checking
-	*  all four directions (horizontal, vertical, two diagonals).
+function countUnscoredInLine(currentBoard, x, y, dx, dy, playerChar) {
+	/* Similar to countInLine, but only counts positions that have not been scored yet,
+    *  which is all lowercase characters.
 	*/
-	
-	for (var row = 0; row < 3; row++) {
-		for (var col = 0; col < 3; col++) {
-			// Skip if cell is not empty
-			if (newBoard.sub[row][col] !== "0") continue;
-			
-			var gx = newBoard.x + col;
-			var gy = newBoard.y + row;
-			
-		// Temporarily place creator's mark
-		newBoard.sub[row][col] = creatorChar;
+	var coordinates = [];
+
+	for (var i = 0; i < 10; i++) {
+		var nx = x + dx * i;
+		var ny = y + dy * i;
+		var cell = getCharAtPos(nx, ny, currentBoard);
 		
-		var wouldScore = false;
-		
-		// Check horizontal (left + right + 1)
-		var h_count = countInLine(currentBoard, gx - 1, gy, -1, 0, creatorChar).length +
-		              countInLine(currentBoard, gx + 1, gy, 1, 0, creatorChar).length + 1;
-		if (h_count >= 3) wouldScore = true;
-		
-		// Check vertical (up + down + 1)
-		var v_count = countInLine(currentBoard, gx, gy - 1, 0, -1, creatorChar).length +
-		              countInLine(currentBoard, gx, gy + 1, 0, 1, creatorChar).length + 1;
-		if (v_count >= 3) wouldScore = true;
-		
-		// Check diagonal top-left to bottom-right
-		var d1_count = countInLine(currentBoard, gx - 1, gy - 1, -1, -1, creatorChar).length +
-		               countInLine(currentBoard, gx + 1, gy + 1, 1, 1, creatorChar).length + 1;
-		if (d1_count >= 3) wouldScore = true;
-		
-		// Check diagonal top-right to bottom-left
-		var d2_count = countInLine(currentBoard, gx + 1, gy - 1, 1, -1, creatorChar).length +
-		               countInLine(currentBoard, gx - 1, gy + 1, -1, 1, creatorChar).length + 1;
-		if (d2_count >= 3) wouldScore = true;			// Remove temporary mark and place triangle if it would score
-			if (wouldScore) {
-				newBoard.sub[row][col] = "t";
-			} else {
-				newBoard.sub[row][col] = "0";
-			}
+		// Match player's character or triangles
+		if (cell === playerChar || cell === "t" || cell === "T" || cell === extraChar) {
+			coordinates.push({x: nx, y: ny});
+		} else {
+			break;
 		}
 	}
+	return coordinates;
+}
+
+function placeTriangles(currentBoard, newBoard, creatorChar) {
+	// Placeholder
 }
 
 function determineCreator(currentBoard) {
@@ -474,7 +534,6 @@ function determineCreator(currentBoard) {
 	
 	// TODO: Implement score tracking to determine creator
 	// For now, alternate based on board count (placeholder logic)
-	// In the C code, this checks board->scores[PLAYER_X] vs board->scores[PLAYER_O]
 	
 	// Placeholder: return "x" for even boards, "o" for odd boards
 	return (currentBoard.length % 2 === 0) ? "x" : "o";
@@ -526,7 +585,7 @@ function charConvert(char) {
 	} else if (char === "B") {
 		return BACKGROUND_TILE;
 	} else if (char === "t") {
-		return "T"; // Display triangles as uppercase T
+		return "t";
 	} else {
 		return char;
 	}
