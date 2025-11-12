@@ -183,8 +183,8 @@ function gameLoop() {
 								
 								// Update scores after the move
 								var scores = updateScore(gameboard);
-								player1score = scores.player1;
-								player2score = scores.player2;
+								player1score = player1score + scores.player1;
+								player2score = player2score + scores.player2;
 								
 								renderBoard(gameboard);
 							}
@@ -284,40 +284,37 @@ function updateScore(gameboard) {
 				var globalY = board.y + row;
 				var cellValue = board.sub[row][col];
 				
-				// Only check unscored positions (lowercase)
-				if (cellValue === 'x' || cellValue === 'o') {
-					var playerChar = cellValue;
+				var playerChar = cellValue;
+				
+				// Check all 8 directions for this position
+				for (var d = 0; d < directions.length; d++) {
+					var dir = directions[d];
+					var line = countUnscoredInLine(gameboard, globalX, globalY, dir.dx, dir.dy);
 					
-					// Check all 8 directions for this position
-					for (var d = 0; d < directions.length; d++) {
-						var dir = directions[d];
-						var line = countUnscoredInLine(gameboard, globalX, globalY, dir.dx, dir.dy, playerChar);
-						
-						// If we found a line of 3 or more
-						if (line.length >= 3) {
-							// Convert all cells in this line to uppercase
-							for (var l = 0; l < line.length; l++) {
-								var coord = line[l];
-								var localMove = globalToLocalMove(gameboard, coord.x, coord.y);
-								if (localMove) {
-									var currentValue = localMove.subboard.sub[localMove.row][localMove.col];
-									// Convert to uppercase
-									if (currentValue === 'x') {
-										localMove.subboard.sub[localMove.row][localMove.col] = 'X';
-									} else if (currentValue === 'o') {
-										localMove.subboard.sub[localMove.row][localMove.col] = 'O';
-									} else if (currentValue === 't') {
-										localMove.subboard.sub[localMove.row][localMove.col] = 'T';
-									}
+					// If we found a line of 3 or more
+					if (line.length >= 3) {
+						// Convert all cells in this line to uppercase
+						for (var l = 0; l < line.length; l++) {
+							var coord = line[l];
+							var localMove = globalToLocalMove(gameboard, coord.x, coord.y);
+							if (localMove) {
+								var currentValue = localMove.subboard.sub[localMove.row][localMove.col];
+								// Convert to uppercase
+								if (currentValue === 'x') {
+									localMove.subboard.sub[localMove.row][localMove.col] = 'X';
+								} else if (currentValue === 'o') {
+									localMove.subboard.sub[localMove.row][localMove.col] = 'O';
+								} else if (currentValue === 't') {
+									localMove.subboard.sub[localMove.row][localMove.col] = 'T';
 								}
 							}
-							
-							// Award points
-							if (playerChar === 'x') {
-								player1Points += line.length;
-							} else if (playerChar === 'o') {
-								player2Points += line.length;
-							}
+						}
+						
+						// Award points
+						if (playerChar === 'x') {
+							player1Points += line.length;
+						} else if (playerChar === 'o') {
+							player2Points += line.length;
 						}
 					}
 				}
@@ -503,7 +500,6 @@ function countUnscoredInLine(currentBoard, x, y, dx, dy, playerChar) {
     *  which is all lowercase characters.
 	*/
 	var coordinates = [];
-	var extraChar = "";
 
 	for (var i = 0; i < 10; i++) {
 		var nx = x + dx * i;
@@ -511,7 +507,7 @@ function countUnscoredInLine(currentBoard, x, y, dx, dy, playerChar) {
 		var cell = getCharAtPos(nx, ny, currentBoard);
 		
 		// Match player's character or triangles
-		if (cell === playerChar || cell === "t" || cell === "T" || cell === extraChar) {
+		if (cell === playerChar || cell === "t" || cell === "T") {
 			coordinates.push({x: nx, y: ny});
 		} else {
 			break;
