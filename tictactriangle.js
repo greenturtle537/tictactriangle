@@ -31,14 +31,14 @@ var screenWidth = 80;
 var screenHeight = 24;
 
 var colorPairs = [
-	{ fc: ANSI_NORMAL, bc: BG_BLACK },
-	{ fc: BLACK, bc: BG_LIGHTGRAY },
+	{ fc: LIGHTGRAY, bc: BG_BLACK },
 	{ fc: BLUE, bc: BG_BROWN },
 	{ fc: RED, bc: BG_CYAN },
 	{ fc: GREEN, bc: BG_MAGENTA },
 	{ fc: CYAN, bc: BG_RED },
 	{ fc: MAGENTA, bc: BG_GREEN },
-	{ fc: YELLOW, bc: BG_BLUE }
+	{ fc: YELLOW, bc: BG_BLUE },
+	{ fc: BLACK, bc: BG_LIGHTGRAY }
 ]
 
 BACKGROUND_TILE = "\xb0"; // Light shade block character
@@ -116,7 +116,7 @@ function gameLoop() {
 		var key = mk.key;
 
 		renderBoard(gameboard);
-		//moveMarker(playerX, playerY, playerX, playerY, gameboard); // To ensure highlighting after render draw. TODO: Remove
+		moveMarker(playerX, playerY, playerX, playerY, gameboard); // To ensure highlighting after render draw. TODO: Remove
 
 		if (highlightOn) {
 			highlightSubboard(highlightX, highlightY, ANSI_NORMAL); // Remove old highlight
