@@ -289,7 +289,7 @@ function updateScore(gameboard) {
 				// Check all 8 directions for this position
 				for (var d = 0; d < directions.length; d++) {
 					var dir = directions[d];
-					var line = countUnscoredInLine(gameboard, globalX, globalY, dir.dx, dir.dy);
+					var line = countUnscoredInLine(gameboard, globalX, globalY, dir.dx, dir.dy. playerChar);
 					
 					// If we found a line of 3 or more
 					if (line.length >= 3) {
