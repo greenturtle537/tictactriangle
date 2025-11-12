@@ -1,0 +1,30 @@
+Tic Tac Triangle
+1. The game is played with two players.
+2. Players must alternate turns, with x going first and o going second.
+3. Players take put pieces on a three by three board on their turn.
+4. If a player arranges three tokens or more tokens in a combination, 
+   they score as many points as tokens in that row.
+5. Combinations can be constructed horizontally, vertically, diagonally.
+5. X and O pieces can only be scored on once.
+4. Once there are no moves remaining on a board, the player who scored 
+   the least points on that board selects the position of the next 
+   three by three board.
+5. All boards for the game are player on a larger 2 dimensional grid, 
+   each board must be placed in such a way that it borders the last 
+   board on a horizontal or vertical axis, where are least one side 
+   is touching an existing board.
+5. If tied for points on the previous board (or no player is able to score),
+   the next player to move selects the new board.
+6. On a new board, any cells from all previous boards that would 
+   form a 3 or greater combination if played by the player who is 
+   responsible for creating the new board form a triangle.
+7. A triangle symbol is a wildcard symbol for both players for the purpose
+   of forming combinations.
+8. Triangles can be scored on up to twice, but only once by each player
+9. A combination can be constructed along two axes so long as three or more
+   symbols are on one axis.
+10. When three triangles appear on a newly created board in a row, the player
+    who created the board doubles their current score. The triangles are 
+    unplayable for creating another triple triangle. The triangles are still 
+    playable for creating combinations. The new board is not played and the 
+    creation of another board is yielded immediatly to the opposing player.
